@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* The Modal (background) */
+    .modal {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      /* Stay in place */
+      z-index: 1;
+      /* Sit on top */
+      padding-top: 100px;
+      /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%;
+      /* Full width */
+      height: 100%;
+      /* Full height */
+      overflow: auto;
+      /* Enable scroll if needed */
+      background-color: rgb(0, 0, 0);
+      /* Fallback color */
+      background-color: rgba(0, 0, 0, 0.4);
+      /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .send-button {
+      height: 40px;
+      position: relative;
+      margin: -20px -50px;
+      width: 100px;
+      top: 50%;
+      left: 50%;
+    }
+
+    .selectAgainst {
+      width: 13em
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Pokedex</h2>
+  <p>Elige la generación:</p>
+
+  <form action="/filtrar" method='post'>
+    <select name="generacion">
+      <option value="generacion1">1ª Generación</option>
+      <option value="generacion2">2ª Generación</option>
+      <option value="generacion3">3ª Generación</option>
+      <option value="generacion4">4ª Generación</option>
+      <option value="generacion5">5ª Generación</option>
+      <option value="generacion6">6ª Generación</option>
+      <option value="generacion7">7ª Generación</option>
+      <option value="todasgeneraciones">Todos</option>
+    </select>
+
+    <p>Elige el/los tipo/tipos:</p>
+    <select name="tipo1">
+      <option value="acero">Acero</option>
+      <option value="agua">Agua</option>
+      <option value="bicho">Bicho</option>
+      <option value="dragon">Dragón</option>
+      <option value="electrico">Eléctrico</option>
+      <option value="fantasma">Fantasma</option>
+      <option value="fuego">Fuego</option>
+      <option value="hada">Hada</option>
+      <option value="hielo">Hielo</option>
+      <option value="lucha">Lucha</option>
+      <option value="normal">Normal</option>
+      <option value="planta">Planta</option>
+      <option value="psiquico">Psiquico</option>
+      <option value="roca">Roca</option>
+      <option value="siniestro">Siniestro</option>
+      <option value="tierra">Tierra</option>
+      <option value="veneno">Veneno</option>
+      <option value="volador">Volador</option>
+    </select>
+    <input type="checkbox" name="legendario" value=1> Legendario<br>
+
+    <p>Ordenar (nº Pokédex):</p>
+    <select name="ordenar">
+      <option value="acero">Ascendente</option>
+      <option value="agua">Descendente</option>
+    </select>
+    <br /><br />
+    <input type="submit" value="Buscar">
+  </form>
+  <br />
+  <!-- Trigger/Open The Modal -->
+  <button id="boton">Añadir Pokemon</button>
+
+  <!-- The Modal -->
+  <div id="ventana" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form action="/añadir" method='post'>
+        <table style="width:100%" align="center">
+          <tr>
+            <td>Habilidades</td>
+            <td><input type="text" name="abilities" placeholder="Sepáralas por comas..."></td>
+            <td>Contra bicho</td>
+            <td><select name="against_bug" class="selectAgainst">
+                <option value="against_bug_nulo"> - </option>
+                <option value="against_bug_0.25"> 0.25 </option>
+                <option value="against_bug_0.5"> 0.5 </option>
+                <option value="against_bug_1"> 1 </option>
+                <option value="against_bug_2"> 2 </option>
+              </select></td>
+
+            <td>Contra siniestro</td>
+            <td><select name="against_dark" class="selectAgainst">
+                <option value="against_dark_nulo"> - </option>
+                <option value="against_dark_0.25"> 0.25 </option>
+                <option value="against_dark_0.5"> 0.5 </option>
+                <option value="against_dark_1"> 1 </option>
+                <option value="against_dark_2"> 2 </option>
+              </select></td>
+          </tr>
+          <tr>
+            <td>Contra dragón</td>
+            <td><select name="against_dragon" class="selectAgainst">
+                <option value="against_dragon_nulo"> - </option>
+                <option value="against_dragon_0.25"> 0.25 </option>
+                <option value="against_dragon_0.5"> 0.5 </option>
+                <option value="against_dragon_1"> 1 </option>
+                <option value="against_dragon_2"> 2 </option>
+              </select></td>
+            <td>Contra eléctrico</td>
+            <td><select name="against_electric" class="selectAgainst">
+                <option value="against_electric_nulo"> - </option>
+                <option value="against_electric_0.25"> 0.25 </option>
+                <option value="against_electric_0.5"> 0.5 </option>
+                <option value="against_electric_1"> 1 </option>
+                <option value="against_electric_2"> 2 </option>
+              </select></td>
+            <td>Contra hada</td>
+            <td><select name="against_fairy" class="selectAgainst">
+                <option value="against_fairy_nulo"> - </option>
+                <option value="against_fairy_0.25"> 0.25 </option>
+                <option value="against_fairy_0.5"> 0.5 </option>
+                <option value="against_fairy_1"> 1 </option>
+                <option value="against_fairy_2"> 2 </option>
+              </select></td>
+          </tr>
+          <tr>
+            <td>Contra lucha</td>
+            <td><select name="against_fight" class="selectAgainst">
+                <option value="against_fight_nulo"> - </option>
+                <option value="against_fight_0.25"> 0.25 </option>
+                <option value="against_fight_0.5"> 0.5 </option>
+                <option value="against_fight_1"> 1 </option>
+                <option value="against_fight_2"> 2 </option>
+              </select></td>
+            <td>Contra fuego</td>
+            <td><select name="against_fire" class="selectAgainst">
+                <option value="against_fire_nulo"> - </option>
+                <option value="against_fire_0.25"> 0.25 </option>
+                <option value="against_fire_0.5"> 0.5 </option>
+                <option value="against_fire_1"> 1 </option>
+                <option value="against_fire_2"> 2 </option>
+              </select></td>
+            <td>Contra volador</td>
+            <td><select name="against_flying" class="selectAgainst">
+                <option value="against_flying_nulo"> - </option>
+                <option value="against_flying_0.25"> 0.25 </option>
+                <option value="against_flying_0.5"> 0.5 </option>
+                <option value="against_flying_1"> 1 </option>
+                <option value="against_flying_2"> 2 </option>
+              </select></td>
+          </tr>
+          <tr>
+            <td>Contra fantasma</td>
+            <td><select name="against_ghost" class="selectAgainst">
+                <option value="against_ghost_nulo"> - </option>
+                <option value="against_ghost_0.25"> 0.25 </option>
+                <option value="against_ghost_0.5"> 0.5 </option>
+                <option value="against_ghost_1"> 1 </option>
+                <option value="against_ghost_2"> 2 </option>
+              </select></td>
+            <td>Contra hierba</td>
+            <td><select name="against_grass" class="selectAgainst">
+                <option value="against_grass_nulo"> - </option>
+                <option value="against_grass_0.25"> 0.25 </option>
+                <option value="against_grass_0.5"> 0.5 </option>
+                <option value="against_grass_1"> 1 </option>
+                <option value="against_grass_2"> 2 </option>
+              </select></td>
+            <td>Contra tierra</td>
+            <td><select name="against_ground" class="selectAgainst">
+                <option value="against_ground_nulo"> - </option>
+                <option value="against_ground_0.25"> 0.25 </option>
+                <option value="against_ground_0.5"> 0.5 </option>
+                <option value="against_ground_1"> 1 </option>
+                <option value="against_ground_2"> 2 </option>
+              </select></td>
+          </tr>
+          <tr>
+            <td>Contra hielo</td>
+            <td><select name="against_ice" class="selectAgainst">
+                <option value="against_ice_nulo"> - </option>
+                <option value="against_ice_0.25"> 0.25 </option>
+                <option value="against_ice_0.5"> 0.5 </option>
+                <option value="against_ice_1"> 1 </option>
+                <option value="against_ice_2"> 2 </option>
+              </select></td>
+            <td>Contra normal</td>
+            <td><select name="against_normal" class="selectAgainst">
+                <option value="against_normal_nulo"> - </option>
+                <option value="against_normal_0.25"> 0.25 </option>
+                <option value="against_normal_0.5"> 0.5 </option>
+                <option value="against_normal_1"> 1 </option>
+                <option value="against_normal_2"> 2 </option>
+              </select></td>
+            <td>Contra veneno</td>
+            <td><select name="against_poison" class="selectAgainst">
+                <option value="against_poison_nulo"> - </option>
+                <option value="against_poison_0.25"> 0.25 </option>
+                <option value="against_poison_0.5"> 0.5 </option>
+                <option value="against_poison_1"> 1 </option>
+                <option value="against_poison_2"> 2 </option>
+              </select></td>
+          </tr>
+          <tr>
+            <td>Contra psíquico</td>
+            <td><select name="against_psychic" class="selectAgainst">
+                <option value="against_psychic_nulo"> - </option>
+                <option value="against_psychic_0.25"> 0.25 </option>
+                <option value="against_psychic_0.5"> 0.5 </option>
+                <option value="against_psychic_1"> 1 </option>
+                <option value="against_psychic_2"> 2 </option>
+              </select></td>
+            <td>Contra roca</td>
+            <td><select name="against_rock" class="selectAgainst">
+                <option value="against_rock_nulo"> - </option>
+                <option value="against_rock_0.25"> 0.25 </option>
+                <option value="against_rock_0.5"> 0.5 </option>
+                <option value="against_rock_1"> 1 </option>
+                <option value="against_rock_2"> 2 </option>
+              </select></td>
+            <td>Contra acero</td>
+            <td><select name="against_steel" class="selectAgainst">
+                <option value="against_steel_nulo"> - </option>
+                <option value="against_steel_0.25"> 0.25 </option>
+                <option value="against_steel_0.5"> 0.5 </option>
+                <option value="against_steel_1"> 1 </option>
+                <option value="against_steel_2"> 2 </option>
+              </select></td>
+          </tr>
+          <tr>
+            <td>Contra agua</td>
+            <td><select name="against_water" class="selectAgainst">
+                <option value="against_water_nulo"> - </option>
+                <option value="against_water_0.25"> 0.25 </option>
+                <option value="against_water_0.5"> 0.5 </option>
+                <option value="against_water_1"> 1 </option>
+                <option value="against_water_2"> 2 </option>
+              </select></td>
+            <td>Ataque</td>
+            <td><input type="text" name="attack" placeholder="Pon un número..."></td>
+            <td>Pasos base del huevo</td>
+            <td><input type="text" name="base_egg_steps"></td>
+          </tr>
+          <tr>
+            <td>Felicidad base</td>
+            <td><input type="text" name="base_happiness"></td>
+            <td>Total base</td>
+            <td><input type="text" name="base_total"></td>
+            <td>Ratio de captura</td>
+            <td><input type="text" name="capture_rate"></td>
+          </tr>
+          <tr>
+            <td>Clasificación</td>
+            <td><input type="text" name="classfication"></td>
+            <td>Defensa</td>
+            <td><input type="text" name="defense"></td>
+            <td>Exp. de crecimiento</td>
+            <td><input type="text" name="experience_growth"></td>
+          </tr>
+          <tr>
+            <td>Altura (m)</td>
+            <td><input type="text" name="height_m"></td>
+            <td>Salud</td>
+            <td><input type="text" name="hp"></td>
+            <td>Nombre en japonés</td>
+            <td><input type="text" name="japanese_name"></td>
+          </tr>
+          <tr>
+            <td>Nombre</td>
+            <td><input type="text" name="name"></td>
+            <td>Porcentaje de machos</td>
+            <td><input type="text" name="percentage_male"></td>
+            <td>Número en la pokédex</td>
+            <td><input type="text" name="pokedex_number"></td>
+          </tr>
+          <tr>
+            <td>Velocidad de ataque</td>
+            <td><input type="text" name="sp_attack"></td>
+            <td>Velocidad de defensa</td>
+            <td><input type="text" name="sp_defense"></td>
+            <td>Velocidad</td>
+            <td><input type="text" name="speed"></td>
+          </tr>
+          <tr>
+            <td>Tipo 1</td>
+            <td><input type="text" name="type1"></td>
+            <td>Tipo 2</td>
+            <td><input type="text" name="type2"></td>
+            <td>Peso (kg)</td>
+            <td><input type="text" name="weight_kg"></td>
+          </tr>
+          <tr>
+            <td>Generación</td>
+            <td><input type="text" name="generation"></td>
+            <td>Es legendario</td>
+            <td><input type="text" name="is_legendary"></td>
+          </tr>
+        </table>
+        <br />
+        <input type="submit" class="send-button" value="Añadir">
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+    // Get the modal
+    var ventana = document.getElementById('ventana');
+
+    // Get the button that opens the modal
+    var boton = document.getElementById("boton");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal 
+    boton.onclick = function () {
+      ventana.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+      ventana.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+      if (event.target == ventana) {
+        ventana.style.display = "none";
+      }
+    }
+  </script>
+
+</body>
+
+</html>

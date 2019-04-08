@@ -1,0 +1,13 @@
+<html>
+<body>
+    <p>Pokemons en la lista</p>
+    <ul>
+    {{#pokemons}}
+        <li>{{name}}</li>
+        <li> <a href="http://127.0.0.1:8080/pokemon?name={{name}}">Pincha aqui para ver el pokemon con mas detalle!</a></li> 
+    {{/pokemons}}
+    </ul>
+    <a href="http://127.0.0.1:8080/">Pincha aqui para volver a la pagina principal</a>
+
+</body>
+</html>

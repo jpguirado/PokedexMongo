@@ -1,10 +1,13 @@
 package com.example.demo;
 
+import static com.mongodb.client.model.Filters.eq;
 import static util.Helpers.printJson;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bson.Document;
@@ -21,15 +24,33 @@ import com.mongodb.client.MongoDatabase;
 @Controller
 public class ControladorPrincipal {
 
-	List<Pokemon> listaPokemonCompleta = new ArrayList<Pokemon>();
-
+	
+	
+	// Datos globales de acceso a BBDD
+	List<Pokemon> listaPokemonCompleta;
+	MongoClient client;
+	MongoDatabase database;
+	MongoCollection<Document> collection;
+	
+	/*
+	 * Se invocara este metodo solo al arrancar la aplicacion, esto es necesario ya que solo queremos cargar en memoria
+	 * los datos de la base de datos 1 vez
+	 
+	@PostConstruct
+	private void initDatabase() {
+		
+			
+	}
+	*/
+	
 	@GetMapping("/")
 	public String controladorInicio(Model model, HttpServletRequest request) {
-		// db.InsertarArticulo();
-
-		MongoClient client = new MongoClient();
-		MongoDatabase database = client.getDatabase("pokemonDB"); // Nombre de la base de datos
-		MongoCollection<Document> collection = database.getCollection("pokemonC"); // Nombre de la coleccion
+		
+		listaPokemonCompleta = new ArrayList<Pokemon>();
+		
+		client = new MongoClient();
+		database = client.getDatabase("pokemonDB"); // Nombre de la base de datos
+		collection = database.getCollection("pokemonC"); // Nombre de la coleccion
 
 		/*
 		 * Recuperamos los datos de la base de datos mongo y los introducimos en una
@@ -85,21 +106,10 @@ public class ControladorPrincipal {
 			pokemonAIntroducir.setIs_legendary(cur.get("is_legendary").toString());
 
 			listaPokemonCompleta.add(pokemonAIntroducir);
-
 		}
 
 		System.out.println("El tamaño de la lista es " + listaPokemonCompleta.size());
-		model.addAttribute("pokemons", listaPokemonCompleta);
-
-		/*
-		 * System.out.println("Find all with iteration: "); MongoCursor<Document> cursor
-		 * = collection.find().iterator(); try { while (cursor.hasNext()) { Document cur
-		 * = cursor.next(); printJson(cur); } } finally { cursor.close(); }
-		 * 
-		 * System.out.println("Count:"); long count = collection.count();
-		 * System.out.println(count);
-		 */
-
+		
 		return "principal";
 	}
 
@@ -128,8 +138,7 @@ public class ControladorPrincipal {
 					listaPokemonConFiltro.add(listaPokemonCompleta.get(i));
 			}
 
-		}
-		else if (generacion.equals("todasgeneraciones") || tipo1.equals("todostipos")) {
+		} else if (generacion.equals("todasgeneraciones") || tipo1.equals("todostipos")) {
 
 			// Filtrar por tipo y legendarios
 			if (generacion.equals("todasgeneraciones")) {
@@ -163,63 +172,156 @@ public class ControladorPrincipal {
 				}
 			}
 		}
+		
+		//Ordenamos en funcion del valor del parametro ordenar: Ascendente o Descendente en funcion de su numero de pokedex
+		if (ordenar.equals("Ascendente")) {
+
+			listaPokemonConFiltro.sort(new Comparator<Pokemon>() {
+				@Override
+				public int compare(Pokemon p1, Pokemon p2) {
+					if (Integer.parseInt(p1.getPokedex_number()) > Integer.parseInt(p2.getPokedex_number()))
+						return 1;
+					if (Integer.parseInt(p1.getPokedex_number()) < Integer.parseInt(p2.getPokedex_number()))
+						return -1;
+					return 0;
+				}
+			});
+
+		}
+		else {
+			listaPokemonConFiltro.sort(new Comparator<Pokemon>() {
+				@Override
+				public int compare(Pokemon p1, Pokemon p2) {
+					if (Integer.parseInt(p1.getPokedex_number()) < Integer.parseInt(p2.getPokedex_number()))
+						return 1;
+					if (Integer.parseInt(p1.getPokedex_number()) > Integer.parseInt(p2.getPokedex_number()))
+						return -1;
+					return 0;
+				}
+			});
+		}
+
 		model.addAttribute("pokemons", listaPokemonConFiltro);
-
-		return "prueba";
+		
+		return "filtro";
 
 	}
 
-	@GetMapping("/legendarios")
-	public String controladorLegendarios(Model model, HttpServletRequest request) {
+	@PostMapping("/nuevoPokemon")
+	public String controladorAñador(Model model, @RequestParam String name, @RequestParam String abilities, @RequestParam String against_bug,
+			@RequestParam String against_dark, @RequestParam String against_dragon,
+			@RequestParam String against_electric, @RequestParam String against_fairy,
+			@RequestParam String against_fight, @RequestParam String against_fire, @RequestParam String against_flying,
+			@RequestParam String against_ghost, @RequestParam String against_grass, @RequestParam String against_ground,
+			@RequestParam String against_ice, @RequestParam String against_normal, @RequestParam String against_poison,
+			@RequestParam String against_psychic, @RequestParam String against_rock, @RequestParam String against_steel,
+			@RequestParam String against_water, @RequestParam String attack, @RequestParam String base_egg_steps,
+			@RequestParam String base_happiness, @RequestParam String base_total, @RequestParam String capture_rate,
+			@RequestParam String classfication, @RequestParam String defense, @RequestParam String experience_growth,
+			@RequestParam String height_m, @RequestParam String hp, @RequestParam String japanese_name,
+			@RequestParam String percentage_male, @RequestParam String pokedex_number, @RequestParam String sp_attack,
+			@RequestParam String sp_defense, @RequestParam String speed, @RequestParam String type1,
+			@RequestParam String type2, @RequestParam String weight_kg, @RequestParam String generation,
+			@RequestParam String is_legendary) {
 
-		List<Pokemon> listaPokemonLegendarios = new ArrayList<Pokemon>();
+		System.out.println("El nombre del pokemon introducido es : " + name);
 
-		for (int i = 0; i < listaPokemonCompleta.size(); i++) {
-			if (listaPokemonCompleta.get(i).getIs_legendary().equals("1")) {
-				listaPokemonLegendarios.add(listaPokemonCompleta.get(i));
-			}
+		model.addAttribute("nombrePokemon", name);
+		
+		//Cogemos el modelo para tener un documento con los mismos campos y vamos reemplazando
+		
+		Document pokemonAInsertar = collection.find().first();
+		
+		//Insertamos los campos del pokemon nuevo
+		pokemonAInsertar.remove("_id");
+		pokemonAInsertar.put("name", name);
+		pokemonAInsertar.put("abilities", abilities);
+		pokemonAInsertar.put("against_bug", against_bug);
+		pokemonAInsertar.put("against_dark", against_dark);
+		pokemonAInsertar.put("against_dragon", against_dragon);
+		pokemonAInsertar.put("against_electric", against_electric);
+		pokemonAInsertar.put("against_fairy", against_fairy);
+		pokemonAInsertar.put("against_fight", against_fight);
+		pokemonAInsertar.put("against_fire", against_fire);
+		pokemonAInsertar.put("against_flying", against_flying);
+		pokemonAInsertar.put("against_ghost", against_ghost);
+		pokemonAInsertar.put("against_grass", against_grass);
+		pokemonAInsertar.put("against_ground", against_ground);
+		pokemonAInsertar.put("against_ice", against_ice);
+		pokemonAInsertar.put("against_normal", against_normal);
+		pokemonAInsertar.put("against_poison", against_poison);
+		pokemonAInsertar.put("against_psychic", against_psychic);
+		pokemonAInsertar.put("against_rock", against_rock);
+		pokemonAInsertar.put("against_steel", against_steel);
+		pokemonAInsertar.put("against_water", against_bug);
+		pokemonAInsertar.put("attack", attack);
+		pokemonAInsertar.put("base_egg_steps", base_egg_steps);
+		pokemonAInsertar.put("base_happiness", base_happiness);
+		pokemonAInsertar.put("base_total", base_total);
+		pokemonAInsertar.put("capture_rate", capture_rate);
+		pokemonAInsertar.put("classfication", classfication);
+		pokemonAInsertar.put("defense", defense);
+		pokemonAInsertar.put("experience_growth", experience_growth);
+		pokemonAInsertar.put("height_m", height_m);
+		pokemonAInsertar.put("hp", hp);
+		pokemonAInsertar.put("japanese_name", japanese_name);
+		pokemonAInsertar.put("percentage_male", percentage_male);
+		pokemonAInsertar.put("pokedex_number", pokedex_number);
+		pokemonAInsertar.put("sp_attack", sp_attack);
+		pokemonAInsertar.put("sp_defense", sp_defense);
+		pokemonAInsertar.put("speed", speed);
+		pokemonAInsertar.put("type1", type1);
+		pokemonAInsertar.put("type2", type2);
+		pokemonAInsertar.put("weight_kg", weight_kg);
+		pokemonAInsertar.put("generation", generation);
+		pokemonAInsertar.put("is_legendary", is_legendary);
+		
+		
+		printJson(pokemonAInsertar);
+		
+		collection.insertOne(pokemonAInsertar);
+		
+		
+		
+		return "nuevoPokemon";
+
+	}
+	
+	/*
+	 * Devuelve la informacion de un pokemon en concreto
+	 */
+	@GetMapping("/pokemon")
+	public String pokemon (Model model, @RequestParam String name,HttpServletRequest request) {
+		
+		Pokemon pokemonAMostrar = new Pokemon();
+		for(int i = 0; i<listaPokemonCompleta.size();i++) {
+			if (listaPokemonCompleta.get(i).getName().equals(name))
+				pokemonAMostrar = listaPokemonCompleta.get(i);
 		}
-
-		model.addAttribute("pokemons", listaPokemonLegendarios);
-
-		return "prueba";
+		
+		model.addAttribute("pokemon", pokemonAMostrar);
+		
+		System.out.println("El nombre del pokemon es: " + name);
+		
+		return "pokemon";
 	}
-
-	@GetMapping("/generacion")
-	public String controladorGeneraciones(Model model, HttpServletRequest request) {
-
-		List<Pokemon> listaPokemonPorGeneracion = new ArrayList<Pokemon>();
-
-		String generacion = "1";
-
-		for (int i = 0; i < listaPokemonCompleta.size(); i++) {
-			if (listaPokemonCompleta.get(i).getGeneration().equals(generacion)) {
-				listaPokemonPorGeneracion.add(listaPokemonCompleta.get(i));
-			}
-		}
-
-		model.addAttribute("pokemons", listaPokemonPorGeneracion);
-
-		return "prueba";
+	
+	@GetMapping("/borrarPokemon")
+	public String borrarPokemon (Model model, @RequestParam String name,HttpServletRequest request) {
+		
+		
+		System.out.println("El nombre del pokemon a borrar es: " + name);
+		
+		
+		collection.deleteOne(eq("name", name));
+		
+		
+		return "borrarPokemon";
 	}
-
-	@GetMapping("/tipo")
-	public String controladorTipo(Model model, HttpServletRequest request) {
-
-		List<Pokemon> listaPokemonPorTipo = new ArrayList<Pokemon>();
-
-		String tipo = "grass";
-
-		for (int i = 0; i < listaPokemonCompleta.size(); i++) {
-			if (listaPokemonCompleta.get(i).getType1().equals(tipo)
-					|| listaPokemonCompleta.get(i).getType2().equals(tipo)) {
-				listaPokemonPorTipo.add(listaPokemonCompleta.get(i));
-			}
-		}
-
-		model.addAttribute("pokemons", listaPokemonPorTipo);
-
-		return "prueba";
-	}
-
+	
+	
 }
+	
+	
+	
+	

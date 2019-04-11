@@ -1,13 +1,28 @@
 <html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
 <body>
     <p>Pokemons en la lista</p>
-    <ul>
+    <select id="dynamic_select">
+    	<option value="" selected>Elige un pokemon</option>
     {{#pokemons}}
-        <li>{{name}}</li>
-        <li> <a href="http://127.0.0.1:8080/pokemon?name={{name}}">Pincha aqui para ver el pokemon con mas detalle!</a></li> 
+        <option value="http://127.0.0.1:8080/pokemon?name={{name}}">{{name}}</option> 
     {{/pokemons}}
-    </ul>
-    <a href="http://127.0.0.1:8080/">Pincha aqui para volver a la pagina principal</a>
+    </select>
+    <button href="http://127.0.0.1:8080/">Pincha aquí para volver a la página principal</button>
 
+	<script>
+	    $(function(){
+	      // bind change event to select
+	      $('#dynamic_select').on('change', function () {
+	          var url = $(this).val(); // get selected value
+	          if (url) { // require a URL
+	              window.location = url; // redirect
+	          }
+	          return false;
+	      });
+	    });
+	</script>
 </body>
 </html>

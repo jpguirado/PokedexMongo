@@ -6,6 +6,9 @@
   <style>
     body {
       font-family: Arial, Helvetica, sans-serif;
+      background-image: url("https://i.imgur.com/iUHX9hO.png");
+      background-size: 960px;
+      background-repeat: no-repeat;
     }
 
     /* The Modal (background) */
@@ -68,25 +71,84 @@
     .selectAgainst {
       width: 13em
     }
+
+    .generacionSelect {
+      position: relative;
+      font-family: Arial;
+    }
+
+    .generacionSelect select {
+      display: none; /*hide original SELECT element:*/
+    }
+
+    .select-selected {
+      background-color: blue;
+    }
+
+    /*style the arrow inside the select element:*/
+    .select-selected:after {
+      position: absolute;
+      content: "";
+      top: 14px;
+      right: 10px;
+      width: 0;
+      height: 0;
+      border: 6px solid transparent;
+      border-color: #ffffff transparent transparent transparent;
+    }
+
+    /*point the arrow upwards when the select box is open (active):*/
+    .select-selected.select-arrow-active:after {
+      border-color: transparent transparent #000000 transparent;
+      top: 70px;
+    }
+
+    /*style the items (options), including the selected item:*/
+    .select-items div,.select-selected { /*letra de la opcion*/
+      color: #ffffff;
+      padding: 8px 16px; /*posicion letras*/
+      border: 1px solid transparent;
+      
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /*style items (options):*/
+    .select-items {
+      position: absolute;
+      background-color: gray;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 99;
+    }
+
+    /*hide the items when the select box is closed:*/
+    .select-hide {
+      display: none;
+    }
+
+    .select-items div:hover, .same-as-selected {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
   </style>
 </head>
 
 <body>
-
-  <h2>Pokedex</h2>
-  <p>Elige la generación:</p>
-
   <form action="/filtrar" method='post'>
-    <select name="generacion">
-      <option value="1">1ª Generación</option>
-      <option value="2">2ª Generación</option>
-      <option value="3">3ª Generación</option>
-      <option value="4">4ª Generación</option>
-      <option value="5">5ª Generación</option>
-      <option value="6">6ª Generación</option>
-      <option value="7">7ª Generación</option>
-      <option value="todasgeneraciones">Todos</option>
-    </select>
+    <div class="generacionSelect" style="width:200px;">
+      <select name="generacion">
+        <option value="1">1ª</option>
+        <option value="2">2ª</option>
+        <option value="3">3ª</option>
+        <option value="4">4ª</option>
+        <option value="5">5ª</option>
+        <option value="6">6ª</option>
+        <option value="7">7ª</option>
+        <option value="todasgeneraciones">Todos</option>
+      </select>
+    </div>
 
     <p>Elige el/los tipo/tipos:</p>
     <select name="tipo1">

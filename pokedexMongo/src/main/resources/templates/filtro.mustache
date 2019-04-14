@@ -1,17 +1,68 @@
 <html>
 <head>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<style>
+		body {
+			font-family: Arial, Helvetica, sans-serif;
+			background-image: url("https://i.imgur.com/iUHX9hO.png");
+			background-size: 960px;
+			background-repeat: no-repeat;
+		}
+
+		#boton-home {
+			margin-top: 18px;
+			margin-left: 20px;
+			height: 58px;
+			width: 58px;
+			background: transparent;
+			border: none;
+			font-size: 0;
+		}
+
+		.styled-select select {
+			background: transparent;
+			border: none;
+			font-size: 14px;
+			height: 29px;
+			padding: 5px;
+			/* If you add too much padding here, the options won't show in IE */
+			width: 168px;
+		}
+
+		/* -------------------- Rounded Corners */
+		.rounded {
+			-webkit-border-radius: 20px;
+			-moz-border-radius: 20px;
+			border-radius: 20px;
+		}
+		.blue {
+			background-color: #3b8ec2;
+		}
+
+		.blue select {
+			color: #fff;
+		}
+
+		#dynamic_select {
+			margin-top: 340px;
+			margin-left: 40px;
+			font-size: 18px;
+			height: 35px;
+			padding: 5px;
+			/* If you add too much padding here, the options won't show in IE */
+			width: 200px;
+		}
+	</style>
 </head>
 <body>
-    <p>Pokemons en la lista</p>
-    <select id="dynamic_select">
+	<input type="button" onclick="location.href='http://127.0.0.1:8080/';" id="boton-home"/>
+	<br></br>
+    <select class="styled-select select blue rounded" id="dynamic_select">
     	<option value="" selected>Elige un pokemon</option>
     {{#pokemons}}
         <option value="http://127.0.0.1:8080/pokemon?name={{name}}">{{name}}</option> 
     {{/pokemons}}
     </select>
-    <button href="http://127.0.0.1:8080/">Pincha aquí para volver a la página principal</button>
-
 	<script>
 	    $(function(){
 	      // bind change event to select

@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<pokedex>
+    <application>
+        <username>grupo8</username>
+        <serialnumber>x</serialnumber>
+        <width>1920</width>
+        <height>1080</height>
+        <colors>
+            <background>
+                <b1>#cc3d3a</b1>
+                <b2>#a92823</b2>
+                <b3>#841c1b</b3>
+                <b4>#e6e6e6</b4>
+                <b5>#3d77a5</b5>
+                <b6>#404855</b6>
+            </background>
+            <text>
+                <t1>#000000</t1>
+                <t2>#ffffff</t2>
+            </text>
+            <button>
+                <b1>#eb9c01</b1>
+                <b2>#2ba400</b2>
+                <b3>#b30003</b3>
+            </button>
+        </colors>
+        <buttons>
+            <n1>generation</n1>
+            <n2>type</n2>
+            <n3>legendary</n3>
+            <n4>ordination</n4> 
+            <n5>plus</n5>
+            <n6>minus</n6>
+            <n7>search</n7>
+        </buttons>
+    </application>
+
+    <database>
+        <profile>
+            <p1>name</p1>
+            <p2>height</p2>
+            <p3>weight</p3>
+            <p4>catch rate</p4>
+            <p5>gender ratio</p5>
+            <p6>egg groups</p6>
+            <p7>hatch steps</p7>
+            <p8>abilities</p8>
+            <p9>evs</p9>              
+        </profile>
+        <npokemon>721</npokemon>
+        <ngen>6</ngen>
+        <ntypes>18</ntypes>
+        <nabilities>308</nabilities>
+        <nmoves>742</nmoves>
+        <evs>
+            <nevs>6</nevs>
+            <ev1>hp</ev1>
+            <ev2>attack</ev2>
+            <ev3>defense</ev3>
+            <ev4>speed</ev4>
+            <ev5>special attack</ev5>
+            <ev6>special defense</ev6>
+        </evs>            
+    </database>
+</pokedex>

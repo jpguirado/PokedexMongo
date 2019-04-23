@@ -1,7 +1,7 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     background-image: url("/css/pokedex.png");
-    background-size: 960px;
+    background-size: 1280px;
     background-repeat: no-repeat;
 }
 
@@ -133,6 +133,27 @@ div {
     /* Opera */
     padding: 10px;
     background-color: #2196F3;
+}
+
+#grupoPractica {
+	position: absolute;
+	top: 230px;
+	left: 1068px;
+	color: #FFFFFF;
+}
+
+#anno {
+	position: absolute;
+	top: 270px;
+	left: 1078px;
+	color: #FFFFFF;
+}
+
+#asignatura {
+	position: absolute;
+	top: 310px;
+	left: 1072px;
+	color: #FFFFFF;
 }
 
 .styled-select select {

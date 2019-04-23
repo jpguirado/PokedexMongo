@@ -6,7 +6,7 @@
   <link rel="stylesheet" type="text/css" href="/css/principal.css"/>
 </head>
 
-<body>
+<body onload="CargarXML()">
   <form action="/filtrar" method='post'>
     <div class="styled-select yellow rounded" id="FirstSelect">
       <select name="generacion">
@@ -371,6 +371,37 @@
       }
     }
   </script>
+  
+    <p id="grupoPractica"></p>
+    <p id="anno"></p>
+    <p id="asignatura"></p>
+
+    <script>
+        function CargarXML() {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+            myFunction(this);
+            }
+        };
+        xmlhttp.open("GET", "/pokedex.xml", true);
+        xmlhttp.send();
+        }
+        function myFunction(xml) {
+        var i;
+        var xmlDoc = xml.responseXML;
+        var table="<tr><th>Nombre de usuario</th><th>Número de serie</th><th>Ancho</th><th>Alto</th></tr>";
+        var x = xmlDoc.getElementsByTagName("application");
+        
+        var userName = x[0].getElementsByTagName("username")[0].childNodes[0].nodeValue;
+        var serialnumber = x[0].getElementsByTagName("serialnumber")[0].childNodes[0].nodeValue;
+        var subject = x[0].getElementsByTagName("subject")[0].childNodes[0].nodeValue;
+        
+        document.getElementById("grupoPractica").innerHTML = userName;
+        document.getElementById("anno").innerHTML = serialnumber;
+        document.getElementById("asignatura").innerHTML = subject;
+        }
+    </script>
 
 </body>
 

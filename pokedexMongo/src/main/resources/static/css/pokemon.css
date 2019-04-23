@@ -1,6 +1,6 @@
 body {
 	font-family: Arial, Helvetica, sans-serif;
-	background-image: url("https://i.imgur.com/iUHX9hO.png");
+    background-image: url("/css/pokedex.png");
 	background-size: 960px;
 	background-repeat: no-repeat;
 }
